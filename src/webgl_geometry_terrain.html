@@ -128,11 +128,6 @@ window.onkeyup = Up
         }
 
 
-
-
-
-
-			
 			var container, stats;
 
 			var camera, controls, scene, renderer;
@@ -194,6 +189,7 @@ window.onkeyup = Up
 				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 20000 );
 
 				scene = new THREE.Scene();
+				scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0005 );
 
 
     var loader = new THREE.JSONLoader();
