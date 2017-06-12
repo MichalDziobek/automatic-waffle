@@ -36,8 +36,6 @@
 
 		<script src="../build/three.js"></script>
 
-		<script src="js/controls/FirstPersonControls.js"></script>
-		<script src="js/controls/FlyControls.js"></script>
 
 		<script src="js/ImprovedNoise.js"></script>
 		<script src="js/Detector.js"></script>
@@ -260,9 +258,6 @@ window.onkeyup = Up
 				container.innerHTML = "";
 
 				container.appendChild( renderer.domElement );
-
-				stats = new Stats();
-				container.appendChild( stats.dom );
 
 				window.addEventListener( 'resize', onWindowResize, false );
 
