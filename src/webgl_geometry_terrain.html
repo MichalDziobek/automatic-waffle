@@ -31,8 +31,8 @@
 	</head>
 	<body>
 	
-		<div id="container"><br /><br /><br /><br /><br />Generating world...</div>
-		<div id="info"><a href="http://threejs.org" target="_blank">three.js</a> - webgl terrain demo<br />(left click: forward, right click: backward)</div>
+		<div id="container"></div>
+		<div id="info"></div>
 
 		<script src="../build/three.js"></script>
 
@@ -69,7 +69,7 @@
             function processimage(e) {
                 var buffer = e.target.result;
                 bitmap = getBMP(buffer)
-				
+				document.getElementById( 'input' ).remove();
 				init();
 				// animate();
             }
@@ -189,11 +189,11 @@ window.onkeyup = Up
 				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 20000 );
 
 				scene = new THREE.Scene();
-				// scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0005 );
+				scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0005 );
 
 
-				var loader = new THREE.ObjectLoader();
-				loader.load("assets/us-c-130-hercules-airplane.json", addModelToScene);
+				var loader = new THREE.JSONLoader();
+				loader.load("assets/rifter4.js", addModelToScene);
 
 			//Add rifter to the scene using "addModelToScene" function
 
