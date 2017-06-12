@@ -189,7 +189,7 @@ window.onkeyup = Up
 				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 20000 );
 
 				scene = new THREE.Scene();
-				scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0005 );
+				// scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0005 );
 
 
     var loader = new THREE.JSONLoader();
@@ -363,9 +363,10 @@ window.onkeyup = Up
 
 					shade = vector3.dot( sun );
 
-					imageData[ i ] = ( 0 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
-					imageData[ i + 1 ] = ( 80 + shade * 96 ) * ( 0.5 + data[ j ] * 0.007 );
-					imageData[ i + 2 ] = ( shade * 96 ) * ( 0.5 + data[ j ] * 0.007 );
+					var tmp = 1;
+					imageData[ i ] = ( 0 + shade * 96 ) + ( 0.5 + data[ j ] * 1 );
+					imageData[ i + 1 ] = 0;
+					imageData[ i + 2 ] = ( shade * 96 ) + ( 150 + data[ j ] * -1 );
 				}
 
 				context.putImageData( image, 0, 0 );
