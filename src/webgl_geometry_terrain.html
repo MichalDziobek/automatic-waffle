@@ -71,8 +71,67 @@
                 bitmap = getBMP(buffer)
 				
 				init();
-				animate();
+				// animate();
             }
+
+
+
+
+
+window.onkeydown = Down
+window.onkeyup = Up
+
+    var pressedl = 0;
+    var pressedu = 0;
+    var pressedr = 0;
+    var pressedd = 0;
+    var pressedshift = 0;
+    var pressedpgdn = 0;
+    var pressedpgup = 0
+
+    function Down(e) { 
+        cxc = e.keyCode;
+        if(cxc == 37)
+            pressedl = 1;
+        if(cxc == 38)
+            pressedu = 1;
+        if(cxc == 39)
+            pressedr = 1;
+        if(cxc == 40)
+            pressedd = 1;
+        if(cxc == 16)
+            pressedshift = 1;
+        if(cxc == 34)
+            pressedpgdn = 1;
+        if(cxc == 33)
+            pressedpgup = 1;
+        //alert(cxc);
+        }
+    function Up(e) {
+        cxc = e.keyCode;
+        if(cxc == 37)
+            pressedl = 0;
+        if(cxc == 38)
+            pressedu = 0;
+        if(cxc == 39)
+            pressedr = 0;
+        if(cxc == 40)
+            pressedd = 0;
+        if(cxc == 16)
+            pressedshift = 0;
+        if(cxc == 34)
+            pressedpgdn = 0;
+        if(cxc == 33)
+            pressedpgup = 0;
+        //alert(cxc)
+        //^uncomment to test keypresses
+        }
+
+
+
+
+
+
 			
 			var container, stats;
 
@@ -81,6 +140,15 @@
 			var mesh, texture;
 
 			var worldWidth, worldDepth;
+
+			var rifter;
+			var roty = 0;
+			var rotx = 0;
+			var rotz = 0;
+			var camChaser = new THREE.Object3D();
+			var thruster = new THREE.Object3D(); //Thruster not yet used, need to figure out particles
+			var rifterspeed;
+			var threexSparks;
 
 			var clock = new THREE.Clock();
 
@@ -123,21 +191,29 @@
 
 				container = document.getElementById( 'container' );
 
-				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 20000 );
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 20000 );
 
 				scene = new THREE.Scene();
 
-				/*controls = new THREE.FirstPersonControls( camera );
-				controls.movementSpeed = 1000;
-				controls.lookSpeed = 0.1;*/
-				
-				controls = new THREE.FlyControls( camera );
 
-				controls.movementSpeed = 1000;
-				controls.domElement = container;
-				controls.rollSpeed = Math.PI / 24;
-				controls.autoForward = false;
-				controls.dragToLook = false;
+    var loader = new THREE.JSONLoader();
+    loader.load("assets/rifter4.js", addModelToScene);
+
+//Add rifter to the scene using "addModelToScene" function
+
+    function addModelToScene(geometry, materials){
+        var material = new THREE.MeshFaceMaterial(materials);
+        rifter = new THREE.Mesh(geometry, material);
+        rifter.scale.set(1.5,1.5,1.5);
+        rifter.rotation.set(0,Math.PI,0);
+        scene.add(rifter);
+        animate();         
+        };
+
+//set rifter speed
+
+    var rifterspeed = 1;
+
 
 				data = generateHeight( worldWidth, worldDepth, bitmap);
 
@@ -186,7 +262,6 @@
 
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
-				controls.handleResize();
 
 			}
 
@@ -208,19 +283,6 @@
 
                     }
                 }
-
-				/*for ( var j = 0; j < 4; j ++ ) {
-
-					for ( var i = 0; i < size; i ++ ) {
-
-						var x = i % width, y = ~~ ( i / width );
-						data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 1.75 );
-
-					}
-
-					quality *= 5;
-
-				}*/
 
 				return data;
 
@@ -287,16 +349,14 @@
 				}
 
 				context.putImageData( image, 0, 0 );
-
 				return canvasScaled;
-
 			}
 
-			//
 
 			function animate() {
 
 				requestAnimationFrame( animate );
+				update();
 
 				render();
 				stats.update();
@@ -305,10 +365,90 @@
 
 			function render() {
 
-				controls.update( clock.getDelta() );
+				// controls.update( clock.getDelta() );
 				renderer.render( scene, camera );
 
 			}
+
+			function update() {
+ 
+//Set speed/rotation vars
+    var wobble = 0;
+    var delta = clock.getDelta();
+ 
+//Setting up keypress to increasing
+//and decelerating rotation functions
+
+    if(pressedl == 1){rotz -= 0.002/(delta^2)};
+    if(pressedu == 1){rotx += 0.001/(delta^2 / 1.2)};
+    if(pressedr == 1){rotz += 0.002/(delta^2)};
+    if(pressedd == 1){rotx -= 0.001/(delta^2 / 1.2)};
+    if(pressedshift == 1){rifterspeed += 0.01;};
+            
+    if(pressedl == 0){ if(rotz.toFixed(10)<0){rotz += 0.001}};
+    if(pressedu == 0){ if(rotx.toFixed(10)>0){rotx -= 0.001}};
+    if(pressedr == 0){ if(rotz.toFixed(10)>0){rotz -= 0.001}};
+    if(pressedd == 0){ if(rotx.toFixed(10)<0){rotx += 0.001}};
+    if(pressedshift == 0){rifterspeed -= 0.02};
+            
+//Set limits on rotation and velocity
+ 
+    if (rotz<=-0.075){rotz=-0.075};
+    if (rotz>=0.075){rotz=0.075};
+    if (rotx<-0.05){rotx=-0.05};
+    if (rotx>0.05){rotx=0.05};
+    if (rifterspeed>=2.5){rifterspeed=2.5};
+    if (rifterspeed<=1){rifterspeed=1};
+    if (rifterspeed>1){wobble = Math.random()*rifterspeed/20;}
+            
+//Set rifter movement to rifter speed
+//and rifter rotation to rifter rot
+            
+    rifter.rotateOnAxis(new THREE.Vector3(0,0,1), rotz);
+    rifter.rotateOnAxis(new THREE.Vector3(1,0,0), rotx);
+    rifter.translateZ(rifterspeed);
+            
+//Move enemy to camera position (spot behind rifter to line up shot)
+
+            
+//Enable rearview cam
+            
+    var rearview;
+    if(pressedpgdn == 1){rearview = -1};
+    if(pressedpgdn == 0){rearview = 1};
+            
+    //Enable cockpit cam
+            
+    var cockpit;
+    if(pressedpgup == 1){cockpit = -0.125};
+    if(pressedpgup == 0){cockpit = 1};
+            
+    //Chase Camera Setup
+                
+        var camChaserOffset = new THREE.Vector3(0,-50 * rotx * cockpit,10 * rearview);
+        var chaserOffset = camChaserOffset.applyMatrix4(rifter.matrixWorld);
+                
+        camChaser.position.x = chaserOffset.x + wobble;
+        camChaser.position.y = chaserOffset.y + wobble;
+        camChaser.position.z = chaserOffset.z + wobble;
+                
+        var relCamOffset = new THREE.Vector3(0,-25 * rotx/2 * cockpit + 0.4,-10 * rifterspeed/4 * rearview * cockpit);
+        //var relCamOffset = new THREE.Vector3(0,5,-5 * rearview * cockpit); // debug camera
+        var cameraOffset = relCamOffset.applyMatrix4(rifter.matrixWorld);
+                
+        camera.position.x = cameraOffset.x;
+        camera.position.y = cameraOffset.y;
+        camera.position.z = cameraOffset.z;
+        camera.lookAt(camChaser.position);
+                
+    
+    //Create offsets for thrust glow
+    
+    var relThrustOffset = new THREE.Vector3(0,0,0);
+    var ThrustOffset = relThrustOffset.applyMatrix4(rifter.matrixWorld);
+    
+
+};
 
 		</script>
 
