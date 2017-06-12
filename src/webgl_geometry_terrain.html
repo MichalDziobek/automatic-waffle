@@ -147,7 +147,7 @@ window.onkeyup = Up
 			var rotz = 0;
 			var camChaser = new THREE.Object3D();
 			var thruster = new THREE.Object3D(); //Thruster not yet used, need to figure out particles
-			var rifterspeed;
+			var rifterspeed = 1;
 			var threexSparks;
 
 			var clock = new THREE.Clock();
@@ -214,8 +214,6 @@ window.onkeyup = Up
 //set rifter speed
 
     var rifterspeed = 1;
-
-	    var rifterspeed = 1;
 
 //Light it up.
 
@@ -407,7 +405,7 @@ window.onkeyup = Up
 			function animate() {
 
 				requestAnimationFrame( animate );
-				// update();
+				update();
 
 				render();
 				// stats.update();
@@ -421,8 +419,8 @@ window.onkeyup = Up
 
 			}
 
-			function update() {
- 
+function update() {
+ debugger;
 //Set speed/rotation vars
     var wobble = 0;
     var delta = clock.getDelta();
@@ -452,8 +450,8 @@ window.onkeyup = Up
     if (rifterspeed<=1){rifterspeed=1};
     if (rifterspeed>1){wobble = Math.random()*rifterspeed/20;}
             
-//Set rifter movement to rifter speed
-//and rifter rotation to rifter rot
+// //Set rifter movement to rifter speed
+// //and rifter rotation to rifter rot
             
     rifter.rotateOnAxis(new THREE.Vector3(0,0,1), rotz);
     rifter.rotateOnAxis(new THREE.Vector3(1,0,0), rotx);
