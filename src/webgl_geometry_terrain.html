@@ -207,12 +207,65 @@ window.onkeyup = Up
         rifter.scale.set(1.5,1.5,1.5);
         rifter.rotation.set(0,Math.PI,0);
         scene.add(rifter);
+		debugger;
         animate();         
         };
 
 //set rifter speed
 
     var rifterspeed = 1;
+
+	    var rifterspeed = 1;
+
+//Light it up.
+
+    var spotLight = new THREE.SpotLight( 0xffffff, 1 );
+    spotLight.position.set( 0, 10000, -1500 );
+    spotLight.castShadow = true;
+    spotLight.shadowMapWidth = 1024;
+    spotLight.shadowMapHeight = 1024;
+    spotLight.shadowCameraNear = 500;
+    spotLight.shadowCameraFar = 4000;
+    spotLight.shadowCameraFov = 30;
+    scene.add( spotLight );
+    var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+    scene.add( light );
+
+//Load reticule images for targeting rings
+
+    var lilring = THREE.ImageUtils.loadTexture( 'assets/lilringnew.png' );
+    var targliltex = new THREE.MeshBasicMaterial( { map: lilring, transparent: true, opacity: 0.7  } );
+    targliltex.side = THREE.DoubleSide;
+    var flatGeo = new THREE.PlaneGeometry( 5, 5 );
+    var targring2 = new THREE.Mesh( flatGeo, targliltex );
+    targring2.scale.set( 1, 1, 1 );
+    targring2.position.set(0,0,0);
+    scene.add( targring2 );
+
+    var bigring = THREE.ImageUtils.loadTexture( 'assets/bigringnew.png' );
+    var targbigtex = new THREE.MeshBasicMaterial( { map: bigring, transparent: true, opacity: 0.7  } );
+    targbigtex.side = THREE.DoubleSide;
+    var flatGeo = new THREE.PlaneGeometry( 7.5, 7.5 );
+    var targring1 = new THREE.Mesh( flatGeo, targbigtex );
+    targring1.scale.set( 2, 2, 2 );
+    targring1.position.set(0,0,0);
+    scene.add( targring1 );
+
+//Make dat sky, dog.
+
+    var skyBoxGeometry = new THREE.SphereGeometry( 10000, 35, 35 );
+    var skyTexture = new THREE.ImageUtils.loadTexture( 'assets/sky.jpg' );
+    skyTexture.wrapS = skyTexture.wrapT = THREE.RepeatWrapping; 
+    skyTexture.repeat.set( 1, 1 );
+    var skyBoxMaterial = new THREE.MeshBasicMaterial( { map:skyTexture, side: THREE.BackSide } );
+    var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+    scene.add(skyBox);
+
+      
+//load thrust glow (or don't, whatever)
+
+    var thrustglow = new THREE.PointLight( 0xff7301 );
+    scene.add(thrustglow);
 
 
 				data = generateHeight( worldWidth, worldDepth, bitmap);
@@ -235,7 +288,7 @@ window.onkeyup = Up
 				texture.wrapT = THREE.ClampToEdgeWrapping;
 
 				mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
-				scene.add( mesh );
+				 scene.add( mesh );
 
 				renderer = new THREE.WebGLRenderer();
 				renderer.setClearColor( 0xbfd1e5 );
@@ -248,8 +301,6 @@ window.onkeyup = Up
 
 				stats = new Stats();
 				container.appendChild( stats.dom );
-
-				//
 
 				window.addEventListener( 'resize', onWindowResize, false );
 
@@ -356,10 +407,10 @@ window.onkeyup = Up
 			function animate() {
 
 				requestAnimationFrame( animate );
-				update();
+				// update();
 
 				render();
-				stats.update();
+				// stats.update();
 
 			}
 
